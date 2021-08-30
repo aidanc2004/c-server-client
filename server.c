@@ -15,7 +15,7 @@ int main(void) {
 
     // Create socket
     if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
-        printf("failed to create socket\n");
+        fprintf(stderr, "failed to create socket\n");
         return -1;
     }
 
@@ -27,14 +27,14 @@ int main(void) {
 
     // bind
     if (bind(sockfd, (struct sockaddr *)&server, sizeof server) != 0) {
-        printf("failed to bind\n");
+        fprintf(stderr, "failed to bind\n");
         close(sockfd);
         return -1;
     }
 
     // listen for connections
     if (listen(sockfd, 5) != 0) {
-        printf("failed to listen\n");
+        fprintf(stderr, "failed to listen\n");
         close(sockfd);
         return -1;
     }
