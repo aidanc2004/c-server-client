@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -10,8 +9,9 @@ int main(void) {
     int sockfd, clientfd;
     struct sockaddr_in server;
     struct sockaddr_storage client;
-    socklen_t client_size;
-    char msg[] = "Socket programming fucking blows!!!\n";
+    socklen_t client_size = sizeof client;
+    int bytes_sent;
+    char msg[] = "Hello world!";
 
     // Create socket
     if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
@@ -24,13 +24,15 @@ int main(void) {
     server.sin_family = AF_INET;
     server.sin_port = htons(59090);
     server.sin_addr.s_addr = INADDR_ANY;
-    
+
+    // bind
     if (bind(sockfd, (struct sockaddr *)&server, sizeof server) != 0) {
         printf("failed to bind\n");
         close(sockfd);
         return -1;
     }
 
+    // listen for connections
     if (listen(sockfd, 5) != 0) {
         printf("failed to listen\n");
         close(sockfd);
@@ -39,12 +41,13 @@ int main(void) {
     
     printf("listening...\n");
 
-    client_size = sizeof client;
+    
     clientfd = accept(sockfd, (struct sockaddr *)&client, &client_size);
 
     printf("connected!\n");
         
-    send(clientfd, msg, sizeof msg, 0);
+    bytes_sent = send(clientfd, msg, sizeof msg, 0);
+    printf("sent %d bytes\n", bytes_sent);
     
     close(sockfd);
     close(clientfd);
